@@ -1,0 +1,11 @@
+include|BASE_TUNINGPART
+add_column|ABSLevelF|byte
+add_column|ABSMinF|byte
+add_column|ABSMaxF|byte
+add_column|ABSDefaultF|byte
+add_column|ABSLevelR|byte
+add_column|ABSMinR|byte
+add_column|ABSMaxR|byte
+add_column|ABSDefaultR|byte
+padding|3
+add_column|Price|uint

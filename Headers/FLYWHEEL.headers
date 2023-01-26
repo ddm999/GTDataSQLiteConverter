@@ -1,0 +1,7 @@
+include|BASE_TUNINGPART
+add_column|enginebrake|byte
+add_column|iflywheel|byte
+add_column|iwheelF|byte
+add_column|iwheelR|byte
+padding|7
+add_column|Price|uint

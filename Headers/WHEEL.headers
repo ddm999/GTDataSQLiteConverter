@@ -1,0 +1,5 @@
+add_column|Label|string
+add_column|Unknown|ushort
+padding|2
+add_column|Filename|ushort
+padding|2

@@ -1,0 +1,5 @@
+include|BASE_TUNINGPART
+add_column|torquemodifier|byte
+add_column|torquemodifier2|byte
+add_column|torquemodifier3|byte
+add_column|Price|uint

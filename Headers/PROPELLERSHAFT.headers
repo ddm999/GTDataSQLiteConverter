@@ -1,0 +1,9 @@
+include|BASE_TUNINGPART
+add_column|enginebrake|byte
+add_column|iwheelF|byte
+add_column|iwheelR|byte
+add_column|ipropF|byte
+add_column|ipropR|byte
+add_column|Unknown1|ushort
+add_column|Unknown2|uint
+add_column|Price|uint

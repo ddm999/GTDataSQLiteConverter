@@ -1,0 +1,8 @@
+include|BASE_TUNINGPART
+add_column|enginebrake|byte
+add_column|iflywheel|byte
+add_column|iwheelF|byte
+add_column|iwheelR|byte
+add_column|stclutchtq|byte
+padding|6
+add_column|Price|uint

@@ -1,0 +1,4 @@
+include|BASE_TUNINGPART
+add_column|yaweffect|byte
+add_column|weighteffect|ushort
+add_column|Price|uint

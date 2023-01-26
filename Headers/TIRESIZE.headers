@@ -1,0 +1,5 @@
+add_column|Part|string
+add_column|DiameterInches|byte
+add_column|Profile|byte
+add_column|WidthMM|byte
+padding|5

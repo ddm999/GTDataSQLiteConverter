@@ -1,0 +1,5 @@
+include|BASE_TUNINGPART
+add_column|BraketorqueF|byte
+add_column|BraketorqueR|byte
+add_column|Sidebraketorque|byte
+add_column|Price|uint
