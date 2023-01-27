@@ -18,43 +18,50 @@ namespace GTDataSQLiteConverter
             if (!File.Exists(exportVerbs.InputPath))
                 throw new InvalidDataException("Input paramdb does not exist.");
 
-            string strPath;
-            if (exportVerbs.StringTablePath != null) {
-                strPath = exportVerbs.StringTablePath;
-            } else {
-                var dir = Path.GetDirectoryName(exportVerbs.InputPath);
-                var fn = Path.GetFileName(exportVerbs.InputPath);
+            string dir = Path.GetDirectoryName(exportVerbs.InputPath);
+            string fn = Path.GetFileName(exportVerbs.InputPath);
 
-                if (fn.Contains("_eu")) {
-                    strPath = Path.Combine(dir, ".id_db_str_eu.db");
-                } else if (fn.Contains("_us")) {
-                    strPath = Path.Combine(dir, ".id_db_str_us.db");
-                } else { 
-                    strPath = Path.Combine(dir, ".id_db_str.db");
-                }
+            string? idxPath = exportVerbs.IDXTablePath;
+            string? idstrPath = exportVerbs.IDStrTablePath;
+            string? pmstrPath = exportVerbs.ParamStrTablePath;
+            string? unistrPath = exportVerbs.UniStrTablePath;
+            string? colPath = exportVerbs.ColorTablePath ?? Path.Combine(dir, "carcolor.sdb");
+            if (fn.Contains("_eu"))
+            {
+                idxPath = idxPath ?? Path.Combine(dir, ".id_db_idx_eu.db");
+                idstrPath = idstrPath ?? Path.Combine(dir, ".id_db_str_eu.db");
+                pmstrPath = pmstrPath ?? Path.Combine(dir, "paramstr_eu.db");
+                unistrPath = unistrPath ?? Path.Combine(dir, "paramunistr_eu.db");
+            }
+            else if (fn.Contains("_us"))
+            {
+                idxPath = idxPath ?? Path.Combine(dir, ".id_db_idx_us.db");
+                idstrPath = idstrPath ?? Path.Combine(dir, ".id_db_str_us.db");
+                pmstrPath = pmstrPath ?? Path.Combine(dir, "paramstr_us.db");
+                unistrPath = unistrPath ?? Path.Combine(dir, "paramunistr_us.db");
+            }
+            else
+            {
+                idxPath = idxPath ?? Path.Combine(dir, ".id_db_idx.db");
+                idstrPath = idstrPath ?? Path.Combine(dir, ".id_db_str.db");
+                pmstrPath = pmstrPath ?? Path.Combine(dir, "paramstr.db");
+                unistrPath = unistrPath ?? Path.Combine(dir, "paramunistr.db");
             }
             
-            string idxPath;
-            if (exportVerbs.IDTablePath != null) {
-                idxPath = exportVerbs.IDTablePath;
-            } else {
-                var dir = Path.GetDirectoryName(exportVerbs.InputPath);
-                var fn = Path.GetFileName(exportVerbs.InputPath);
-
-                if (fn.Contains("_eu")) {
-                    idxPath = Path.Combine(dir, ".id_db_idx_eu.db");
-                } else if (fn.Contains("_us")) {
-                    idxPath = Path.Combine(dir, ".id_db_idx_us.db");
-                } else {
-                    idxPath = Path.Combine(dir, ".id_db_idx.db");
-                }
-            }
-
             var idtable = new IDTable();
-            idtable.Read(idxPath, strPath);
+            idtable.Read(idxPath, idstrPath);
+
+            var strtable = new StringTable();
+            strtable.Read(pmstrPath);
+
+            var unitable = new StringTable();
+            unitable.Read(unistrPath);
+
+            var coltable = new StringTable();
+            coltable.Read(colPath);
 
             var database = new ParamDB();
-            database.Read(exportVerbs.InputPath, ref idtable);
+            database.Read(exportVerbs.InputPath, ref idtable, ref strtable, ref unitable, ref coltable);
 
             string outPath;
             if (exportVerbs.OutputPath != null) {
@@ -78,10 +85,19 @@ namespace GTDataSQLiteConverter
         [Option('o', "output", Required = false, HelpText = "Output SQLite database file. Default is based on the paramdb.")]
         public string? OutputPath { get; set; }
 
-        [Option("str", HelpText = "Input GT3 id_db_str file. Default is based on the paramdb.")]
-        public string StringTablePath { get; set; }
-
         [Option("idx", HelpText = "Input GT3 id_db_idx file. Default is based on the paramdb.")]
-        public string IDTablePath { get; set; }
+        public string? IDXTablePath { get; set; }
+
+        [Option("istr", HelpText = "Input GT3 id_db_str file. Default is based on the paramdb.")]
+        public string? IDStrTablePath { get; set; }
+
+        [Option("pstr", HelpText = "Input GT3 paramstr file. Default is based on the paramdb.")]
+        public string? ParamStrTablePath { get; set; }
+
+        [Option("ustr", HelpText = "Input GT3 paramunistr file. Default is based on the paramdb.")]
+        public string? UniStrTablePath { get; set; }
+
+        [Option("cstr", HelpText = "Input GT3 carcolor sdb file. Default is based on the paramdb.")]
+        public string? ColorTablePath { get; set; }
     }
 }

@@ -64,7 +64,7 @@ add_column|UnknownOpponentData29|uint
 add_column|UnknownOpponentData30|uint
 add_column|UnknownOpponentData31|uint
 add_column|UnknownOpponentData32|uint
-add_column|EligibleCarsListID|ulong
+add_column|EligibleCarsListID|string
 add_column|RollingStartSpeed|byte
 add_column|Laps|byte
 add_column|SpecialConditionsType|byte
@@ -115,7 +115,7 @@ add_column|SilverTimeMilliseconds|ushort
 add_column|BronzeTimeMinutes|byte
 add_column|BronzeTimeSeconds|byte
 add_column|BronzeTimeMilliseconds|ushort
-padding|1
+padding|2
 add_column|TireRestriction|byte
 add_column|Category|byte
 add_column|PrizeMoney1st|ushort
@@ -131,7 +131,7 @@ add_column|DifficultyLevel|byte
 add_column|Unknown8|byte
 add_column|Unknown9|byte
 add_column|RaceModeID|string
-add_column|Label|ushort
+add_column|Label|string1
 add_column|MachineTestMaybe|byte
 add_column|EventTypeRelatedMaybe|byte
 add_column|CarTypeRestriction|byte

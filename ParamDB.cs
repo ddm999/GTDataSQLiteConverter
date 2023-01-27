@@ -47,7 +47,7 @@ namespace GTDataSQLiteConverter
         };
 
         private List<ParamDBTable> tables = new();
-        public void Read(string filename, ref IDTable ids)
+        public void Read(string filename, ref IDTable ids, ref StringTable paramstr, ref StringTable unistr, ref StringTable colorstr)
         {
             using var fs = new FileStream(filename, FileMode.Open);
             var bs = new BinaryStream(fs);
@@ -77,7 +77,7 @@ namespace GTDataSQLiteConverter
                 }
 
                 Console.WriteLine($"Reading '{tablename}'.");
-                table.Read(tablename, dataStart+tableStart, tableEnd-tableStart, ref ids, ref bs);
+                table.Read(tablename, dataStart+tableStart, tableEnd-tableStart, ref bs, ref ids, ref paramstr, ref unistr, ref colorstr);
                 tables.Add(table);
             }
             bs.Dispose();

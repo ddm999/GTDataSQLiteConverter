@@ -1,19 +1,32 @@
 ﻿using Syroot.BinaryData;
 using DBHelper;
-using GTDataSQLiteConverter;
-using System.Linq;
 
 namespace GTDataSQLiteConverter
 {
+    enum ParamDBStringType
+    {
+        ID = 0,
+        String,
+        Unicode,
+        Color
+    }
+
     internal class ParamDBTable : DBTable
     {
         private readonly uint ExpectedMagic = 0x54445447;
 
         private IDTable IDs = new();
-        public void Read(string name, uint start, uint length, ref IDTable ids, ref BinaryStream bs)
+        private StringTable Strings = new();
+        private StringTable UnicodeStrings = new();
+        private StringTable ColorStrings = new();
+        public void Read(string name, uint start, uint length, ref BinaryStream bs, ref IDTable ids,
+                         ref StringTable paramstr, ref StringTable unistr, ref StringTable colorstr)
         {
             Name = name;
             IDs = ids;
+            Strings = paramstr;
+            UnicodeStrings = unistr;
+            ColorStrings = colorstr;
 
             bs.Seek(start, SeekOrigin.Begin);
 
@@ -42,7 +55,23 @@ namespace GTDataSQLiteConverter
             if (tableSize != length)
                 Console.WriteLine($"Warning: GTDT table length ({tableSize}) != GTAR section length {length}, may break!");
 
-            Rows = DBUtils.ReadRows(bs, bs.Position, structCount, Columns, structSize, StringDataHandler);
+            List<Func<ulong, object>> stringHandlers = new()
+            {
+                IDStringDataHandler,
+                StringDataHandler,
+                UniStringDataHandler,
+                ColStringDataHandler
+            };
+            Rows = DBUtils.ReadRows(bs, bs.Position, structCount, Columns, structSize, stringHandlers);
+        }
+
+        public object IDStringDataHandler(ulong id)
+        {
+            if (id == 0)
+                return "NULL";
+
+            var val = IDs.Get(id);
+            return val != null ? val : $"unknown idstring! {id}";
         }
 
         public object StringDataHandler(ulong id)
@@ -50,7 +79,25 @@ namespace GTDataSQLiteConverter
             if (id == 0)
                 return "NULL";
 
-            var val = IDs.Get(id);
+            var val = Strings.Get((ushort)id);
+            return val != null ? val : $"unknown string! {id}";
+        }
+
+        public object UniStringDataHandler(ulong id)
+        {
+            if (id == 0)
+                return "NULL";
+
+            var val = UnicodeStrings.Get((ushort)id);
+            return val != null ? val : $"unknown string! {id}";
+        }
+
+        public object ColStringDataHandler(ulong id)
+        {
+            if (id == 0)
+                return "NULL";
+
+            var val = ColorStrings.Get((ushort)id);
             return val != null ? val : $"unknown string! {id}";
         }
 

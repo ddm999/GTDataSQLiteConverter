@@ -2,8 +2,8 @@ include|BASE_TUNINGPART
 add_column|clMINF|byte
 add_column|clMAXF|byte
 add_column|clDFF|byte
-add_column|PriceMaybe|uint
-add_column|Filename|ulong
+padding|4
+add_column|Filename|string
 add_column|Unknown1|byte
 add_column|Unknown2|byte
 add_column|Unknown3|byte
@@ -33,9 +33,7 @@ add_column|Unknown20|byte
 add_column|Unknown21|byte
 add_column|Unknown22|byte
 add_column|Unknown23|byte
-add_column|Unknown24|byte
-add_column|Unknown25|byte
-add_column|Unknown26|byte
+padding|3
 add_column|Unknown27|byte
 add_column|Unknown28|byte
 add_column|Unknown29|byte

@@ -25,7 +25,8 @@ namespace GTDataSQLiteConverter
             Encoding encoding = Encoding.Default;
             if (encodingNum == 0xFFFF)
             {
-                encoding = Encoding.GetEncoding("EUC-JP");
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                encoding = Encoding.GetEncoding("euc-jp");
             }
             else if (encodingNum != 0x0001)
             {
@@ -50,6 +51,11 @@ namespace GTDataSQLiteConverter
             }
         }
 
-        public string Get(ushort index) => Strings[index];
+        public string? Get(ushort index)
+        {
+            if (index >= Strings.Count)
+                return null;
+            return Strings[index];
+        }
     }
 }

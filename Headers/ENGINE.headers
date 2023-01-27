@@ -1,7 +1,7 @@
 include|BASE_PART
-add_column|enginetype|ushort
-add_column|cam|ushort
-add_column|aspiration|ushort
+add_column|enginetype|string2
+add_column|cam|string2
+add_column|aspiration|string2
 add_column|soundNum|ushort
 add_column|torqueA|ushort
 add_column|torqueB|ushort
@@ -19,11 +19,11 @@ add_column|torqueM|ushort
 add_column|torqueN|ushort
 add_column|torqueO|ushort
 add_column|torqueP|ushort
-add_column|displacement|ushort
+add_column|displacement|string1
 add_column|psvalue|ushort
-add_column|psrpm|ushort
+add_column|psrpm|string2
 add_column|torquevalue|ushort
-add_column|torquerpm|ushort
+add_column|torquerpm|string2
 add_column|torquemul|byte
 add_column|clutchmeetrpm|byte
 add_column|idlerpm|byte

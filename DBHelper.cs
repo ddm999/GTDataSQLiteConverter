@@ -25,7 +25,7 @@ namespace DBHelper
 
     public class DBUtils
     {
-        public static List<TableRow> ReadRows(BinaryStream bs, long dataStart, long entryCount, List<TableColumn> columns, int rowLength, Func<ulong, object> stringHandler)
+        public static List<TableRow> ReadRows(BinaryStream bs, long dataStart, long entryCount, List<TableColumn> columns, int rowLength, List<Func<ulong, object>> stringHandlers)
         {
             var rows = new List<TableRow>();
             for (var i = 0; i < entryCount; i++)
@@ -37,33 +37,57 @@ namespace DBHelper
                     TableColumn col = columns[j];
                     bs.Position = dataStart + (i * rowLength) + col.Offset;
 
-                    if (col.Type == DBColumnType.String)
+                    switch (col.Type)
                     {
-                        row.Cells.Add(stringHandler(bs.ReadUInt64()));
-                    }
-                    else if (col.Type == DBColumnType.Int64)
-                    {
-                        row.Cells.Add(bs.ReadUInt64());
-                    }
-                    else if (col.Type == DBColumnType.Int)
-                    {
-                        row.Cells.Add(bs.ReadUInt32());
-                    }
-                    else if (col.Type == DBColumnType.Float)
-                    {
-                        row.Cells.Add(bs.ReadSingle());
-                    }
-                    else if (col.Type == DBColumnType.Double)
-                    {
-                        row.Cells.Add(bs.ReadDouble());
-                    }
-                    else if (col.Type == DBColumnType.Byte)
-                    {
-                        row.Cells.Add(bs.ReadByte());
-                    }
-                    else if (col.Type == DBColumnType.Short)
-                    {
-                        row.Cells.Add(bs.ReadUInt16());
+                        case DBColumnType.String:
+                            row.Cells.Add(stringHandlers[0](bs.ReadUInt64()));
+                            break;
+                        case DBColumnType.Int64:
+                            row.Cells.Add(bs.ReadUInt64());
+                            break;
+                        case DBColumnType.Int:
+                            row.Cells.Add(bs.ReadUInt32());
+                            break;
+                        case DBColumnType.Float:
+                            row.Cells.Add(bs.ReadSingle());
+                            break;
+                        case DBColumnType.Double:
+                            row.Cells.Add(bs.ReadDouble());
+                            break;
+                        case DBColumnType.Byte:
+                            row.Cells.Add(bs.ReadByte());
+                            break;
+                        case DBColumnType.Short:
+                            row.Cells.Add(bs.ReadUInt16());
+                            break;
+
+                        case DBColumnType.String1:
+                            row.Cells.Add(stringHandlers[1](bs.ReadUInt16()));
+                            break;
+                        case DBColumnType.String2:
+                            row.Cells.Add(stringHandlers[2](bs.ReadUInt16()));
+                            break;
+                        case DBColumnType.String3:
+                            row.Cells.Add(stringHandlers[3](bs.ReadUInt16()));
+                            break;
+                        case DBColumnType.String4:
+                            row.Cells.Add(stringHandlers[4](bs.ReadUInt32()));
+                            break;
+                        case DBColumnType.String5:
+                            row.Cells.Add(stringHandlers[5](bs.ReadUInt32()));
+                            break;
+                        case DBColumnType.String6:
+                            row.Cells.Add(stringHandlers[6](bs.ReadUInt32()));
+                            break;
+                        case DBColumnType.String7:
+                            row.Cells.Add(stringHandlers[7](bs.ReadUInt64()));
+                            break;
+                        case DBColumnType.String8:
+                            row.Cells.Add(stringHandlers[8](bs.ReadUInt64()));
+                            break;
+                        case DBColumnType.String9:
+                            row.Cells.Add(stringHandlers[9](bs.ReadUInt64()));
+                            break;
                     }
                 }
 
@@ -76,11 +100,11 @@ namespace DBHelper
         public static int TypeToSize(DBColumnType type)
         {
             // can't use a switch for types :(
-            if (type == DBColumnType.String || type == DBColumnType.Int64 || type == DBColumnType.Double)
+            if (type == DBColumnType.String || type == DBColumnType.Int64 || type == DBColumnType.Double || type == DBColumnType.String7 || type == DBColumnType.String8 || type == DBColumnType.String9)
                 return 8;
-            else if (type == DBColumnType.Int || type == DBColumnType.Float)
+            else if (type == DBColumnType.Int || type == DBColumnType.Float || type == DBColumnType.String4 || type == DBColumnType.String5 || type == DBColumnType.String6)
                 return 4;
-            else if (type == DBColumnType.Short)
+            else if (type == DBColumnType.Short || type == DBColumnType.String1 || type == DBColumnType.String2 || type == DBColumnType.String3)
                 return 2;
             else if (type == DBColumnType.Byte)
                 return 1;
@@ -92,6 +116,15 @@ namespace DBHelper
             str switch
             {
                 "str" or "string" => DBColumnType.String,
+                "string1" => DBColumnType.String1,
+                "string2" => DBColumnType.String2,
+                "string3" => DBColumnType.String3,
+                "string4" => DBColumnType.String4,
+                "string5" => DBColumnType.String5,
+                "string6" => DBColumnType.String6,
+                "string7" => DBColumnType.String7,
+                "string8" => DBColumnType.String8,
+                "string9" => DBColumnType.String9,
                 "int8" or "sbyte" => DBColumnType.Byte,
                 "int16" or "short" or "2" => DBColumnType.Short,
                 "int32" or "int" or "4" => DBColumnType.Int,
@@ -174,6 +207,15 @@ namespace DBHelper
                             DBColumnType.Short => $"{(ushort)row.Cells[i]}, ",
                             DBColumnType.Byte => $"{(int)row.Cells[i]}, ",
                             DBColumnType.Double => $"{(double)row.Cells[i]}, ",
+                            DBColumnType.String1 => $"'{((string)row.Cells[i]).Replace("'", "''")}', ",
+                            DBColumnType.String2 => $"'{((string)row.Cells[i]).Replace("'", "''")}', ",
+                            DBColumnType.String3 => $"'{((string)row.Cells[i]).Replace("'", "''")}', ",
+                            DBColumnType.String4 => $"'{((string)row.Cells[i]).Replace("'", "''")}', ",
+                            DBColumnType.String5 => $"'{((string)row.Cells[i]).Replace("'", "''")}', ",
+                            DBColumnType.String6 => $"'{((string)row.Cells[i]).Replace("'", "''")}', ",
+                            DBColumnType.String7 => $"'{((string)row.Cells[i]).Replace("'", "''")}', ",
+                            DBColumnType.String8 => $"'{((string)row.Cells[i]).Replace("'", "''")}', ",
+                            DBColumnType.String9 => $"'{((string)row.Cells[i]).Replace("'", "''")}', "
                         };
                     }
 
@@ -247,7 +289,7 @@ namespace DBHelper
         public static string? TypeToSQLiteTypeName(DBColumnType type)
         {
             // can't use a switch for types :(
-            if (type == DBColumnType.String)
+            if (type == DBColumnType.String || type == DBColumnType.String1 || type == DBColumnType.String2 || type == DBColumnType.String3 || type == DBColumnType.String4 || type == DBColumnType.String5 || type == DBColumnType.String6 || type == DBColumnType.String7 || type == DBColumnType.String8 || type == DBColumnType.String9)
                 return "TEXT";
             else if (type == DBColumnType.Byte || type == DBColumnType.Short || type == DBColumnType.Int || type == DBColumnType.Int64)
                 return "INTEGER";
@@ -284,6 +326,15 @@ namespace DBHelper
         Float,
         Int64,
         Double,
-        String
+        String,
+        String1,
+        String2,
+        String3,
+        String4,
+        String5,
+        String6,
+        String7,
+        String8,
+        String9
     }
 }
