@@ -41,7 +41,10 @@ namespace GTDataSQLiteConverter
                     }
 
                     Console.WriteLine($"Reading '{tableName}'.");
-                    var columnMappings = TableMappingReader.ReadColumnMappings(headersFile);
+                    var columnMappings = TableMappingReader.ReadColumnMappings(headersFile, out int readSize);
+                    if (table.ElementSize != readSize)
+                        Console.WriteLine($"WARNING: '{tableName}' non-matching mapped size");
+
                     var rows = ReadRows(table, columnMappings, 0);
 
                     ExportTableToSQLite(tableName, columnMappings, rows, connection);

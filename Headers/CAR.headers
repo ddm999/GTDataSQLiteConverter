@@ -1,31 +1,4 @@
-add_column|Car|id
-add_column|BRAKE|id
-add_column|BRAKECONTROLLER|id
-add_column|STEER|id
-add_column|CHASSIS|id
-add_column|LIGHTWEIGHT|id
-add_column|RACINGMODIFY|id
-add_column|ENGINE|id
-add_column|PORTPOLISH|id
-add_column|ENGINEBALANCE|id
-add_column|DISPLACEMENT|id
-add_column|COMPUTER|id
-add_column|NATUNE|id
-add_column|TURBINEKIT|id
-add_column|DRIVETRAIN|id
-add_column|FLYWHEEL|id
-add_column|CLUTCH|id
-add_column|PROPELLERSHAFT|id
-add_column|LSD|id
-add_column|GEAR|id
-add_column|SUSPENSION|id
-add_column|INTERCOOLER|id
-add_column|MUFFLER|id
-add_column|FRONTTIRE|id
-add_column|REARTIRE|id
-add_column|ASCC|id
-add_column|TCSC|id
-add_column|WHEEL|id
+include|BASE_CAR
 add_column|Tuner|ushort
 add_column|Maker|ushort
 add_column|NameFirstPartUS|unicode
@@ -33,13 +6,29 @@ add_column|NameSecondPartUS|unicode
 add_column|Label|string
 add_column|Year|ushort
 add_column|Price|uint
+
+// bit0 = cannotBuy
+// bit1 = cannotSell
+// bit2 = cannotChangeWheel
 add_column|IsSpecialMaybe|byte
 add_column|Unknown|byte
 add_column|NameFirstPartJP|unicode
 add_column|NameSecondPartJP|unicode
-add_column|Unknown2|ushort
-add_column|Unknown3|ulong
+add_column|SteerType|byte
+
+// 0 = false
+// 1 = Not BR
+// 2 = BR
+// 3 = Not US
+// 4 = US
+// 5 = Not US or JP
+// 6 = US or Not JP
+// 7 = Not JP
+// 8 = JP
+add_column|RegionCondition|byte
+add_column|Unknown3|int
+add_column|Unknown4|int
 add_column|NameFirstPartEU|unicode
 add_column|NameSecondPartEU|unicode
 add_column|MakerName|unicode
-add_column|Unknown4|ushort
+add_column|Unknown6|ushort

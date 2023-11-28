@@ -8,10 +8,12 @@ namespace GTDataSQLiteConverter
 {
     public class TableMappingReader
     {
-        public static List<TableColumn> ReadColumnMappings(string tableName)
+        public static List<TableColumn> ReadColumnMappings(string tableName, out int readSize)
         {
             int offset = 0;
             List<TableColumn> columns = IterativeHeadersReader(tableName, ref offset);
+
+            readSize = offset;
             return columns;
         }
 

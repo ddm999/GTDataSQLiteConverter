@@ -1,0 +1,15 @@
+add_column|Part|id
+add_column|forceVolTA|byte
+add_column|forceVolGU|byte
+add_column|forceVolGR|byte
+add_column|forceVolSA|byte
+add_column|forceVolGV|byte
+add_column|forveVolDT|byte
+add_column|forveVolWT|byte
+add_column|forceVolSF|byte
+add_column|forceVolWD|byte
+add_column|forceVolHT|byte
+add_column|forceVolWR|byte
+add_column|forveVolWH|byte
+add_column|forveVolWG|byte
+padding|3

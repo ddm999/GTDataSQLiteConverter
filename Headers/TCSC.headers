@@ -1,0 +1,10 @@
+include|BASE_TUNINGPART
+add_column|Unk0x11|byte
+add_column|MaxLevel|byte
+add_column|Unk0x13|byte
+add_column|Unk0x14|byte
+add_column|Unk0x15|byte
+add_column|Unk0x16|byte
+add_column|Unk0x17|byte
+add_column|Unk0x18|int
+add_column|Price|int

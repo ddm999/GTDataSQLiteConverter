@@ -1,0 +1,16 @@
+include|BASE_TUNINGPART
+add_column|wastegate|byte
+add_column|boost1|byte
+add_column|peakrpm1|byte
+add_column|response1|byte
+add_column|boost2|byte
+add_column|peakrpm2|byte
+add_column|response2|byte
+add_column|Unk0x18|byte
+add_column|Unk0x19|byte
+add_column|Unk0x1A|byte
+add_column|torqueMultiplier|byte
+add_column|torqueMultiplier2|short
+add_column|Unused0x1E|short
+add_column|Unused0x20|int
+add_column|Price|int

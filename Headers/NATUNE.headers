@@ -1,0 +1,7 @@
+include|BASE_TUNINGPART
+add_column|Unk0x11|byte
+add_column|Unk0x12|byte
+add_column|torqueModifier|byte
+add_column|torqueModifier2|int
+add_column|Price|int
+padding|4
