@@ -1,2 +1,2 @@
-add_column|Label|string
-add_column|CarLabel|string
+add_column|Label|id
+add_column|CarLabel|id

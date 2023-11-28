@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GTDataSQLiteConverter": {
+      "commandName": "Project",
+      "commandLineArgs": "-i \"D:\\Modding_Research\\Gran_Turismo\\Gran_Turismo_3\\data\\database\\paramdb.db\""
+    }
+  }
+}

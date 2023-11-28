@@ -47,30 +47,22 @@ namespace GTDataSQLiteConverter
                 pmstrPath = pmstrPath ?? Path.Combine(dir, "paramstr.db");
                 unistrPath = unistrPath ?? Path.Combine(dir, "paramunistr.db");
             }
-            
-            var idtable = new IDTable();
-            idtable.Read(idxPath, idstrPath);
 
-            var strtable = new StringTable();
-            strtable.Read(pmstrPath);
-
-            var unitable = new StringTable();
-            unitable.Read(unistrPath);
-
-            var coltable = new StringTable();
+            var coltable = new StringsDataBase();
             coltable.Read(colPath);
 
-            var database = new ParamDB();
-            database.Read(exportVerbs.InputPath, ref idtable, ref strtable, ref unitable, ref coltable);
+            var database = new CarDataBase();
+            database.InitSubDatabases(exportVerbs.InputPath, pmstrPath, unistrPath);
+            database.InitIDTables(idxPath, idstrPath);
 
             string outPath;
-            if (exportVerbs.OutputPath != null) {
+            if (exportVerbs.OutputPath is not null)
                 outPath = exportVerbs.OutputPath;
-            } else {
+            else 
                 outPath = Path.ChangeExtension(exportVerbs.InputPath, ".sqlite");
-            }
-
-            database.ExportTables(outPath);
+            
+            var exporter = new SQLiteExporter(database);
+            exporter.ExportTables(outPath);
         }
 
         public static void HandleNotParsedArgs(IEnumerable<Error> errors) {}

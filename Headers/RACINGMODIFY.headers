@@ -3,7 +3,7 @@ add_column|clMINF|byte
 add_column|clMAXF|byte
 add_column|clDFF|byte
 padding|4
-add_column|Filename|string
+add_column|Filename|id
 add_column|Unknown1|byte
 add_column|Unknown2|byte
 add_column|Unknown3|byte

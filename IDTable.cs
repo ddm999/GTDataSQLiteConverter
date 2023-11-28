@@ -11,12 +11,9 @@ namespace GTDataSQLiteConverter
     {
         private readonly uint ExpectedMagic = 0x42444449;
 
-        private readonly SortedDictionary<ulong, string> IDs = new();
-        public void Read(string indexfn, string stringfn)
+        private readonly SortedDictionary<ulong, long> IDs = new();
+        public void Read(string indexfn)
         {
-            StringTable stringTable = new();
-            stringTable.Read(stringfn);
-
             var fs = new FileStream(indexfn, FileMode.Open);
             var bs = new BinaryStream(fs);
 
@@ -29,12 +26,18 @@ namespace GTDataSQLiteConverter
             var count = bs.ReadUInt32();
             for (int i = 0; i < count; i++)
             {
-                ulong id = bs.ReadUInt64();
-                ushort num = (ushort)bs.ReadUInt64();
-                IDs.Add(id, stringTable.Get(num));
+                ulong hash = bs.ReadUInt64();
+                long strIndex = bs.ReadInt64();
+                IDs.Add(hash, strIndex);
             }
         }
 
-        public string? Get(ulong id) => IDs.TryGetValue(id, out string? value) ? value : null;
+        public long GetStringIndex(ulong hash)
+        {
+            if (IDs.TryGetValue(hash, out long index))
+                return index;
+
+            return -1;
+        }
     }
 }

@@ -1,5 +1,5 @@
-add_column|Course|string
+add_column|Course|id
 add_column|SurfaceType|ushort
-add_column|Filename|string1
-add_column|DisplayName|string2
-add_column|Unknown|string1
+add_column|Filename|string
+add_column|DisplayName|unicode
+add_column|Unknown|string

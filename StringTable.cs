@@ -3,7 +3,7 @@ using System.Text;
 
 namespace GTDataSQLiteConverter
 {
-    internal class StringTable
+    internal class StringsDataBase
     {
         private readonly uint ExpectedMagic = 0x42445453;
 

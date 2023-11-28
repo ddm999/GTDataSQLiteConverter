@@ -1,5 +1,4 @@
-add_column|Label|string
-add_column|Unknown|ushort
-padding|2
-add_column|Filename|string1
+add_column|Label|id
+add_column|Price|int
+add_column|Filename|unicode
 padding|2
