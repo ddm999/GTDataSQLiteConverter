@@ -1,15 +1,17 @@
-﻿using Syroot.BinaryData;
+﻿using Microsoft.VisualBasic;
+
+using Syroot.BinaryData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GTDataSQLiteConverter
+namespace GTDataSQLiteConverter.Formats
 {
-    internal class IDTable
+    public class IDTable
     {
-        private readonly uint ExpectedMagic = 0x42444449;
+        public const uint ExpectedMagic = 0x42444449;
 
         private readonly SortedDictionary<ulong, long> IDs = new();
         public void Read(string indexfn)
@@ -30,6 +32,25 @@ namespace GTDataSQLiteConverter
                 long strIndex = bs.ReadInt64();
                 IDs.Add(hash, strIndex);
             }
+        }
+
+        public void Write(Stream stream)
+        {
+            BinaryStream bs = new BinaryStream(stream, ByteConverter.Little);
+            bs.WriteUInt32(ExpectedMagic);
+            bs.WriteUInt32((uint)IDs.Count);
+            
+            foreach (var id in IDs)
+            {
+                bs.WriteUInt64(id.Key); // hash
+                bs.WriteInt64(id.Value); // str index
+            }
+        }
+
+        public void Add(ulong hash, long strIndex)
+        {
+            if (!IDs.ContainsKey(hash))
+                IDs.Add(hash, strIndex);
         }
 
         public long GetStringIndex(ulong hash)

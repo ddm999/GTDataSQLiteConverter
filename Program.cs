@@ -8,8 +8,9 @@ namespace GTDataSQLiteConverter
         {
             Console.WriteLine("[-- GT3DataSQLiteConverter by ddm, based on GT3DataSplitter by pez2k -- ]");
 
-            Parser.Default.ParseArguments<ExportVerbs>(args)
+            Parser.Default.ParseArguments<ExportVerbs, ImportVerbs>(args)
                 .WithParsed<ExportVerbs>(Export)
+                .WithParsed<ImportVerbs>(Import)
                 .WithNotParsed(HandleNotParsedArgs);
         }
 
@@ -28,28 +29,28 @@ namespace GTDataSQLiteConverter
             string? colPath = exportVerbs.ColorTablePath ?? Path.Combine(dir, "carcolor.sdb");
             if (fn.Contains("_eu"))
             {
-                idxPath = idxPath ?? Path.Combine(dir, ".id_db_idx_eu.db");
-                idstrPath = idstrPath ?? Path.Combine(dir, ".id_db_str_eu.db");
-                pmstrPath = pmstrPath ?? Path.Combine(dir, "paramstr_eu.db");
-                unistrPath = unistrPath ?? Path.Combine(dir, "paramunistr_eu.db");
+                idxPath ??= Path.Combine(dir, ".id_db_idx_eu.db");
+                idstrPath ??= Path.Combine(dir, ".id_db_str_eu.db");
+                pmstrPath ??= Path.Combine(dir, "paramstr_eu.db");
+                unistrPath ??= Path.Combine(dir, "paramunistr_eu.db");
             }
             else if (fn.Contains("_us"))
             {
-                idxPath = idxPath ?? Path.Combine(dir, ".id_db_idx_us.db");
-                idstrPath = idstrPath ?? Path.Combine(dir, ".id_db_str_us.db");
-                pmstrPath = pmstrPath ?? Path.Combine(dir, "paramstr_us.db");
-                unistrPath = unistrPath ?? Path.Combine(dir, "paramunistr_us.db");
+                idxPath ??= Path.Combine(dir, ".id_db_idx_us.db");
+                idstrPath ??= Path.Combine(dir, ".id_db_str_us.db");
+                pmstrPath ??= Path.Combine(dir, "paramstr_us.db");
+                unistrPath ??= Path.Combine(dir, "paramunistr_us.db");
             }
             else
             {
-                idxPath = idxPath ?? Path.Combine(dir, ".id_db_idx.db");
-                idstrPath = idstrPath ?? Path.Combine(dir, ".id_db_str.db");
-                pmstrPath = pmstrPath ?? Path.Combine(dir, "paramstr.db");
-                unistrPath = unistrPath ?? Path.Combine(dir, "paramunistr.db");
+                idxPath ??= Path.Combine(dir, ".id_db_idx.db");
+                idstrPath ??= Path.Combine(dir, ".id_db_str.db");
+                pmstrPath ??= Path.Combine(dir, "paramstr.db");
+                unistrPath ??= Path.Combine(dir, "paramunistr.db");
             }
 
-            var coltable = new StringsDataBase();
-            coltable.Read(colPath);
+            //var coltable = new StringsDataBase();
+            //coltable.Read(colPath);
 
             var database = new CarDataBase();
             database.InitSubDatabases(exportVerbs.InputPath, pmstrPath, unistrPath);
@@ -63,6 +64,16 @@ namespace GTDataSQLiteConverter
             
             var exporter = new SQLiteExporter(database);
             exporter.ExportTables(outPath);
+        }
+
+        static void Import(ImportVerbs importVerbs)
+        {
+            var importer = new SQLiteImporter(importVerbs.InputPath);
+
+            if (importVerbs.OutputPath is null)
+                importVerbs.OutputPath = Path.GetDirectoryName(importVerbs.InputPath);
+
+            importer.Import(importVerbs.OutputPath, importVerbs.Suffix);
         }
 
         public static void HandleNotParsedArgs(IEnumerable<Error> errors) {}
@@ -91,5 +102,18 @@ namespace GTDataSQLiteConverter
 
         [Option("cstr", HelpText = "Input GT3 carcolor sdb file. Default is based on the paramdb.")]
         public string? ColorTablePath { get; set; }
+    }
+
+    [Verb("import", HelpText = "Import a SQLite database into a GT3 paramdb.")]
+    public class ImportVerbs
+    {
+        [Option('i', "input", Required = true, HelpText = "Input GT3 sqlite file.")]
+        public string InputPath { get; set; }
+
+        [Option('o', "output", Required = false, HelpText = "Output SQLite database file. Default is based on the sqlite.")]
+        public string? OutputPath { get; set; }
+
+        [Option('p', "prefix", HelpText = "Suffix to append to the output files, i.e eu = paramdb_eu.db")]
+        public string Suffix { get; set; }
     }
 }

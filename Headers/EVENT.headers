@@ -1,3 +1,4 @@
+// Mapped out using .gnu.linkonce symbols in GTC
 add_column|EventID|id
 add_column|CourseID|id
 add_column|Opponent1|id

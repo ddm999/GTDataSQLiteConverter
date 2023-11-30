@@ -1,19 +1,25 @@
-﻿using Microsoft.Data.Sqlite;
-using Syroot.BinaryData;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Microsoft.Data.Sqlite;
+
 using Syroot.BinaryData.Memory;
+using Syroot.BinaryData;
+
+using GTDataSQLiteConverter.Entities;
+using GTDataSQLiteConverter.Formats;
+using System.Xml.Linq;
 
 namespace GTDataSQLiteConverter
 {
     public class SQLiteExporter
     {
         private CarDataBase _database;
+
+        private SqliteConnection _con;
 
         public SQLiteExporter(CarDataBase database)
         {
@@ -22,35 +28,56 @@ namespace GTDataSQLiteConverter
 
         public void ExportTables(string sqliteDbFile)
         {
-            using (var connection = new SqliteConnection($"Data Source={sqliteDbFile}"))
+            _con = new SqliteConnection($"Data Source={sqliteDbFile}");
+            _con.Open();
+
+            MakeTableInfo();
+
+            for (int i = 0; i < _database.GetNumElements(); i++)
             {
-                connection.Open();
+                CarDatabaseFileType type = (CarDatabaseFileType)i;
+                var table = _database.GetFile(i);
 
-                for (int i = 0; i < _database.GetNumElements(); i++)
+                string tableName = type.ToString();
+
+                string headersFile = TableMappingReader.GetHeadersFile(tableName);
+                if (string.IsNullOrEmpty(headersFile))
                 {
-                    CarDatabaseFileType type = (CarDatabaseFileType)i;
-                    var table = _database.GetFile(i);
-
-                    string tableName = type.ToString();
-
-                    string headersFile = TableMappingReader.GetHeadersFile(tableName);
-                    if (string.IsNullOrEmpty(headersFile))
-                    {
-                        Console.WriteLine($"Skipped '{tableName}': unmapped.");
-                        continue;
-                    }
-
-                    Console.WriteLine($"Reading '{tableName}'.");
-                    var columnMappings = TableMappingReader.ReadColumnMappings(headersFile, out int readSize);
-                    if (table.ElementSize != readSize)
-                        Console.WriteLine($"WARNING: '{tableName}' non-matching mapped size");
-
-                    var rows = ReadRows(table, columnMappings, 0);
-
-                    ExportTableToSQLite(tableName, columnMappings, rows, connection);
+                    Console.WriteLine($"Skipped '{tableName}': unmapped.");
+                    continue;
                 }
 
-                connection.Close();
+                Console.WriteLine($"Reading '{tableName}'.");
+                var columnMappings = TableMappingReader.ReadColumnMappings(headersFile, out int readSize);
+                if (table.ElementSize != readSize)
+                    Console.WriteLine($"WARNING: '{tableName}' non-matching mapped size");
+
+                var rows = ReadRows(table, columnMappings, 0);
+
+                ExportTableToSQLite(tableName, columnMappings, rows);
+            }
+
+            _con.Close();
+            _con.Dispose();
+        }
+
+        public void MakeTableInfo()
+        {
+            IEnumerable<DataBlock> elems = _database.GetElements().OrderBy(e => e.TableID);
+
+            var command = _con.CreateCommand();
+            command.CommandText = $"DROP TABLE IF EXISTS _DatabaseTableInfo;";
+            command.ExecuteNonQuery();
+
+            command = _con.CreateCommand();
+            command.CommandText = "CREATE TABLE _DatabaseTableInfo (TableName TEXT, TableID INTEGER, Version INTEGER)";
+            command.ExecuteNonQuery();
+
+            foreach (DataBlock elem in elems)
+            {
+                command = _con.CreateCommand();
+                command.CommandText = $"INSERT INTO  _DatabaseTableInfo (TableName, TableID, Version) VALUES (\"{((CarDatabaseFileType)elem.TableID)}\", {elem.TableID}, {elem.Version})";
+                command.ExecuteNonQuery();
             }
         }
 
@@ -120,10 +147,10 @@ namespace GTDataSQLiteConverter
             return rows;
         }
 
-        public static void ExportTableToSQLite(string name, List<TableColumn> columns, List<TableRow> rows, SqliteConnection connection)
+        public void ExportTableToSQLite(string name, List<TableColumn> columns, List<TableRow> rows)
         {
             //SQL: DROP TABLE IF EXISTS
-            var command = connection.CreateCommand();
+            var command = _con.CreateCommand();
             command.CommandText = $"DROP TABLE IF EXISTS \"{name}\";";
 
 #if DONT_RUN_SQL
@@ -149,7 +176,7 @@ namespace GTDataSQLiteConverter
 #if PRINT_SQL_QUERIES
             Console.WriteLine(tableDefinition);
 #endif
-            command = connection.CreateCommand();
+            command = _con.CreateCommand();
             command.CommandText = tableDefinition;
 #if DONT_RUN_SQL
             Console.WriteLine($"Skipping CREATE TABLE for '{name}'.");
@@ -206,7 +233,7 @@ namespace GTDataSQLiteConverter
                         Console.WriteLine(insertDefinition);
 #endif
 
-                        command = connection.CreateCommand();
+                        command = _con.CreateCommand();
                         command.CommandText = insertDefinition;
 #if DONT_RUN_SQL
                     Console.WriteLine($"Skipping early ({(100.0f * entryCounter) / (1.0f * rows.Count)}%) INSERT INTO for '{name}'.");
@@ -248,7 +275,7 @@ namespace GTDataSQLiteConverter
                 Console.WriteLine(insertDefinition);
 #endif
 
-                command = connection.CreateCommand();
+                command = _con.CreateCommand();
                 command.CommandText = insertDefinition;
 #if DONT_RUN_SQL
                 Console.WriteLine($"Skipping INSERT INTO for '{name}'.");
@@ -260,36 +287,5 @@ namespace GTDataSQLiteConverter
             }
             Console.WriteLine($"All done for '{name}'.");
         }  
-    }
-
-    public class TableColumn
-    {
-        public string Name { get; set; }
-        public DBColumnType Type { get; set; }
-        public long Offset { get; set; }
-
-        public override string ToString()
-        {
-            return $"{Name} ({Type} at {Offset:X8})";
-        }
-    }
-
-    public class TableRow
-    {
-        public List<object> Cells { get; set; } = new List<object>();
-    }
-
-    public enum DBColumnType
-    {
-        Unknown,
-        Byte,
-        Short,
-        Int,
-        Float,
-        Int64,
-        Double,
-        Id,
-        String,
-        Unicode,
     }
 }

@@ -10,7 +10,7 @@ add_column|Price|uint
 // bit0 = cannotBuy
 // bit1 = cannotSell
 // bit2 = cannotChangeWheel
-add_column|IsSpecialMaybe|byte
+add_column|Flags|byte
 add_column|Unknown|byte
 add_column|NameFirstPartJP|unicode
 add_column|NameSecondPartJP|unicode

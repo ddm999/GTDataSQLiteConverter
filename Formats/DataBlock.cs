@@ -5,20 +5,13 @@ using System.Buffers.Binary;
 
 namespace GTDataSQLiteConverter
 {
-    enum ParamDBStringType
-    {
-        ID = 0,
-        String,
-        Unicode,
-        Color
-    }
-
     public class DataBlock
     {
         private readonly uint ExpectedMagic = 0x54445447;
+        public const uint HeaderSize = 0x10;
 
-        public uint Version { get; set; }
-        public uint TableID { get; set; }
+        public ushort Version { get; set; }
+        public short TableID { get; set; }
 
         /// <summary>
         /// AKA Number of rows
@@ -30,11 +23,6 @@ namespace GTDataSQLiteConverter
         /// </summary>
         public ushort ElementSize { get; set; }
 
-        /// <summary>
-        /// AKA File size
-        /// </summary>
-        public uint BlockNumber { get; set; }
-
         public byte[] Buffer { get; set; }
 
         public void Read(BinaryStream bs)
@@ -44,11 +32,25 @@ namespace GTDataSQLiteConverter
                 throw new InvalidDataException("DB data is not a GTDT table.");
 
             Version = bs.ReadUInt16();
-            TableID = bs.ReadUInt16();
+            TableID = bs.ReadInt16();
             NumOfElements = bs.ReadUInt16();
             ElementSize = bs.ReadUInt16(); // Also BlockSize
-            BlockNumber = bs.ReadUInt32();
-            Buffer = bs.ReadBytes((int)BlockNumber - 0x10);
+            uint blockNumber = bs.ReadUInt32(); // Aka file size
+            Buffer = bs.ReadBytes((int)blockNumber - 0x10);
+        }
+
+        public void Write(Stream stream)
+        {
+            BinaryStream bs = new BinaryStream(stream, ByteConverter.Little);
+            bs.WriteUInt32(ExpectedMagic);
+            bs.WriteUInt16(Version);
+            bs.WriteInt16(TableID);
+            bs.WriteUInt16(NumOfElements);
+            bs.WriteUInt16(ElementSize);
+            bs.WriteUInt32((uint)(HeaderSize + (NumOfElements * ElementSize)));
+
+            if (Buffer is not null)
+                bs.Write(Buffer);
         }
 
         public Span<byte> GetEntry(int index)
