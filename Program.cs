@@ -113,7 +113,7 @@ namespace GTDataSQLiteConverter
         [Option('o', "output", Required = false, HelpText = "Output SQLite database file. Default is based on the sqlite.")]
         public string? OutputPath { get; set; }
 
-        [Option('p', "prefix", HelpText = "Suffix to append to the output files, i.e eu = paramdb_eu.db")]
+        [Option('s', "suffix", HelpText = "Suffix to append to the output files, i.e eu = paramdb_eu.db")]
         public string Suffix { get; set; }
     }
 }
