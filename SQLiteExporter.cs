@@ -37,7 +37,6 @@ namespace GTDataSQLiteConverter
             {
                 CarDatabaseFileType type = (CarDatabaseFileType)i;
                 var table = _database.GetFile(i);
-
                 string tableName = type.ToString();
 
                 string headersFile = TableMappingReader.GetHeadersFile(tableName);
@@ -100,8 +99,14 @@ namespace GTDataSQLiteConverter
                     {
                         case DBColumnType.Id:
                             {
-                                string str = _database.GetIDString(sr.ReadUInt64());
-                                row.Cells.Add(str);
+                                ulong hash = sr.ReadUInt64();
+                                if (hash == 0)
+                                    row.Cells.Add(null);
+                                else
+                                {
+                                    string str = _database.GetIDString(hash);
+                                    row.Cells.Add(str);
+                                }
                             }
                             break;
                         case DBColumnType.String:
@@ -211,7 +216,7 @@ namespace GTDataSQLiteConverter
                         {
                             DBColumnType.String => $"'{((string)row.Cells[i]).Replace("'", "''")}', ",
                             DBColumnType.Unicode => $"'{((string)row.Cells[i]).Replace("'", "''")}', ",
-                            DBColumnType.Id => $"'{((string)row.Cells[i]).Replace("'", "''")}', ",
+                            DBColumnType.Id => row.Cells[i] is not null ? $"'{((string)row.Cells[i]).Replace("'", "''")}', " : "NULL, ",
                             DBColumnType.Int => $"{(uint)row.Cells[i]}, ",
                             DBColumnType.Float => $"{(float)row.Cells[i]}, ",
                             DBColumnType.Int64 => $"{(ulong)row.Cells[i]}, ",

@@ -60,7 +60,7 @@ namespace GTDataSQLiteConverter
 
         public long SearchEntry(ulong hash)
         {
-            int min = -1;
+            int min = 0;
             int max = NumOfElements - 1;
             while (min <= max)
             {

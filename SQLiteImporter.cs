@@ -88,13 +88,20 @@ namespace GTDataSQLiteConverter
                         {
                             case DBColumnType.Id:
                                 {
-                                    string id = reader.GetString(i);
-                                    ulong hash = HashString(id);
+                                    if (reader.IsDBNull(i))
+                                    {
+                                        row.Cells.Add(null);
+                                    }
+                                    else
+                                    {
+                                        string id = reader.GetString(i);
+                                        ulong hash = HashString(id);
 
-                                    ushort strIndex = _database.IDStringDataBase.Add(id);
-                                    _database.IDTable.Add(hash, strIndex);
+                                        ushort strIndex = _database.IDStringDataBase.Add(id);
+                                        _database.IDTable.Add(hash, strIndex);
 
-                                    row.Cells.Add(hash);
+                                        row.Cells.Add(hash);
+                                    }
                                 }
                                 break;
                             case DBColumnType.Unicode:
@@ -165,7 +172,7 @@ namespace GTDataSQLiteConverter
                         switch (columns[j].Type)
                         {
                             case DBColumnType.Id:
-                                sw.WriteUInt64((ulong)row.Cells[j]);
+                                sw.WriteUInt64((ulong)(row.Cells[j] ?? 0UL));
                                 break;
                             case DBColumnType.Unicode:
                             case DBColumnType.String:
