@@ -1,7 +1,11 @@
 include|BASE_TUNINGPART
-add_column|Unk0x11|byte
-add_column|Unk0x12|byte
+add_column|rpmPointsModifier|byte
+add_column|revlimitModifier|byte
 add_column|torqueModifier|byte
-add_column|torqueModifier2|int
-add_column|Price|int
-padding|4
+add_column|torqueModifier2|byte
+add_column|torqueModifier3|byte
+add_column|Unk0x16|short
+add_column|Unk0x18|int
+
+add_column|Price|uint
+
