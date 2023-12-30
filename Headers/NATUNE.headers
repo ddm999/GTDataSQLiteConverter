@@ -8,4 +8,3 @@ add_column|Unk0x16|short
 add_column|Unk0x18|int
 
 add_column|Price|uint
-
