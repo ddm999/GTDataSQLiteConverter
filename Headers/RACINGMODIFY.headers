@@ -28,10 +28,10 @@ add_column|Unknown18|byte
 add_column|clMINR|byte
 add_column|clMAXR|byte
 add_column|clDFR|byte
-add_column|Unknown19|byte
-add_column|Unknown20|byte
-add_column|Unknown21|byte
-add_column|Unknown22|byte
+add_column|wheeloffsetF|sbyte
+add_column|wheeloffsetR|sbyte
+add_column|susarmF|byte
+add_column|susarmR|byte
 add_column|Unknown23|byte
 padding|3
 add_column|Unknown27|byte
