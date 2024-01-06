@@ -22,7 +22,4 @@ add_column|wheeloffsetR|sbyte
 add_column|susarmF|byte
 add_column|susarmR|byte
 padding|3
-add_column|Unknown27|byte
-add_column|Unknown28|byte
-add_column|Unknown29|byte
-add_column|Unknown30|byte
+add_column|ModelProjection|float
