@@ -20,11 +20,12 @@ add_column|Unknown13|byte
 add_column|Unknown14|byte
 add_column|Unknown15|byte
 add_column|Unknown16|byte
-add_column|Unknown17|ushort
+add_column|weighteffect|ushort
 add_column|treadF|ushort
 add_column|treadR|ushort
 add_column|width|ushort
-add_column|Unknown18|byte
+add_column|yaweffect|byte
+add_column|cd|byte
 add_column|clMINR|byte
 add_column|clMAXR|byte
 add_column|clDFR|byte
@@ -32,7 +33,6 @@ add_column|wheeloffsetF|sbyte
 add_column|wheeloffsetR|sbyte
 add_column|susarmF|byte
 add_column|susarmR|byte
-add_column|Unknown23|byte
 padding|3
 add_column|Unknown27|byte
 add_column|Unknown28|byte
