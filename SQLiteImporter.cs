@@ -30,10 +30,11 @@ namespace GTDataSQLiteConverter
             _database = new CarDataBase();
         }
 
-        public void Import(string outputDir, string suffix)
+        public void Import(string outputDir, string suffix, string version)
         {
             _con = new SqliteConnection($"Data Source={_sqliteFile}");
             _con.Open();
+            _database.Version = version;
 
             CreateTables();
             FillTables();
@@ -67,7 +68,7 @@ namespace GTDataSQLiteConverter
                 if (string.IsNullOrEmpty(headerFileName))
                     continue;
 
-                var columns = TableMappingReader.ReadColumnMappings(headerFileName, out int rowLength);
+                var columns = TableMappingReader.ReadColumnMappings(headerFileName, out int rowLength, _database.Version);
 
                 var command = _con.CreateCommand();
                 command.CommandText = $"SELECT * FROM {table.Key};";

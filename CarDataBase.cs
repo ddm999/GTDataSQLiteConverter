@@ -14,12 +14,14 @@ namespace GTDataSQLiteConverter
 
         public IDTable IDTable { get; set; } = new();
         public StringsDataBase IDStringDataBase { get; set; } = new();
+        public string Version { get; set; } = "";
 
-        public void InitSubDatabases(string databaseFile, string stringDatabaseName, string uniStrDatabaseName)
+        public void InitSubDatabases(string databaseFile, string stringDatabaseName, string uniStrDatabaseName, string version)
         {
             ReadDatabase(databaseFile);
             ReadStringDatabase(stringDatabaseName);
             ReadUniStringDatabase(uniStrDatabaseName);
+            Version = version;
         }
 
         public void ReadDatabase(string fileName)

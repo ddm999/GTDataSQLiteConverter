@@ -39,7 +39,7 @@ namespace GTDataSQLiteConverter
                 var table = _database.GetFile(i);
                 string tableName = type.ToString();
 
-                string headersFile = TableMappingReader.GetHeadersFile(tableName);
+                string? headersFile = TableMappingReader.GetHeadersFile(tableName);
                 if (string.IsNullOrEmpty(headersFile))
                 {
                     Console.WriteLine($"Skipped '{tableName}': unmapped.");
@@ -47,7 +47,7 @@ namespace GTDataSQLiteConverter
                 }
 
                 Console.WriteLine($"Reading '{tableName}'.");
-                var columnMappings = TableMappingReader.ReadColumnMappings(headersFile, out int readSize);
+                var columnMappings = TableMappingReader.ReadColumnMappings(headersFile, out int readSize, _database.Version);
                 if (table.ElementSize != readSize)
                     Console.WriteLine($"WARNING: '{tableName}' non-matching mapped size");
 
